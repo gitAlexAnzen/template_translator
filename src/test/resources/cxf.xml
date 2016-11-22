@@ -1,0 +1,76 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sec="http://cxf.apache.org/configuration/security"
+	xmlns:http="http://cxf.apache.org/transports/http/configuration"
+	xmlns:jaxws="http://java.sun.com/xml/ns/jaxws" xmlns:cxf="http://cxf.apache.org/core"
+	xsi:schemaLocation="
+      http://cxf.apache.org/configuration/security
+      http://cxf.apache.org/schemas/configuration/security.xsd
+      http://cxf.apache.org/transports/http/configuration
+      http://cxf.apache.org/schemas/configuration/http-conf.xsd
+      http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+      http://cxf.apache.org/core
+      http://cxf.apache.org/schemas/core.xsd">
+
+	<http:conduit
+		name="{http://www.anzen.com.mx/app/kba/imagescomponent/services/}ImageAuthHttpPort.http-conduit">
+
+		<http:tlsClientParameters>
+			<sec:keyManagers keyPassword="truststorepass">
+				<sec:keyStore type="PKCS12" password="truststorepass"
+          file="/usr/src/app/config/client3_from_kbaAdmin.p12" />
+			</sec:keyManagers>
+			<sec:trustManagers>
+				<sec:keyStore type="JKS" password="truststorepass"
+          file="/usr/src/app/config/truststore.jks" />
+			</sec:trustManagers>
+			
+		</http:tlsClientParameters>
+				
+		<http:client AutoRedirect="true" Connection="Keep-Alive" />
+	</http:conduit>
+
+	  <http:conduit name="https://esbqa02.consubanco.com:9080/.*">
+	        <http:tlsClientParameters>
+	              <sec:trustManagers>
+	                   <sec:keyStore type="JKS" password="truststorepass"
+	                               file="/usr/src/app/config/truststore.jks" />
+	              </sec:trustManagers>                       
+	        </http:tlsClientParameters>                
+	        <http:client AutoRedirect="true" Connection="Keep-Alive" />
+	   </http:conduit>
+
+	<!-- enable soap message logging with 'pretty' option -->
+	<bean id="abstractLoggingInterceptor" abstract="true">
+		<property name="prettyLogging" value="true" />
+	</bean>
+	
+	<bean id="loggingInInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor"
+		parent="abstractLoggingInterceptor" />
+	
+	<bean id="loggingOutInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor"
+		parent="abstractLoggingInterceptor" />
+	
+	<cxf:bus>
+		<cxf:inInterceptors>
+			<ref bean="loggingInInterceptor" />
+		</cxf:inInterceptors>
+		<cxf:outInterceptors>
+			<ref bean="loggingOutInterceptor" />
+		</cxf:outInterceptors>
+		<cxf:outFaultInterceptors>
+			<ref bean="loggingOutInterceptor" />
+		</cxf:outFaultInterceptors>
+		<cxf:inFaultInterceptors>
+			<ref bean="loggingInInterceptor" />
+		</cxf:inFaultInterceptors>
+	</cxf:bus>
+	
+	<!-- the bellow option does not enable the 'pretty' option on logs -->
+	<!--cxf:bus>
+	  <cxf:features>
+	    <cxf:logging/>
+	  </cxf:features>
+	</cxf:bus -->
+
+</beans>

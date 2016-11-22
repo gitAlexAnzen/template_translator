@@ -1,0 +1,81 @@
+<configuration>
+  <jmxConfigurator />
+
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+      <pattern>%date [%thread] %highlight(%-5level) %logger{35} - %replace(%msg){'&lt;password>(.*)&lt;/password>|password=(.*),', '********'}%n</pattern>
+    </encoder>
+	</appender>
+
+	<appender name="consubancoTranslatorFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <param name="file" value="/usr/src/app/logs/nameBank.log" />
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+	      		<!-- daily rollover -->
+	      		<fileNamePattern>nameBank.%d{yyyy-MM-dd}.log</fileNamePattern>
+	    		<!-- keep 5 days' worth of history -->
+	    		<maxHistory>5</maxHistory>
+	    	</rollingPolicy>
+		<encoder>
+      <pattern>%date [%thread] %highlight(%-5level) %logger{35} - %replace(%msg){'&lt;password>(.*)&lt;/password>|password=(.*),', '********'}%n</pattern>
+    </encoder>
+	</appender>
+
+	<appender name="consubancoSoapTraceFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+   
+    <param name="file" value="/usr/src/app/logs/nameBankSoapTrace.log" />
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                        <!-- daily rollover -->
+                        <fileNamePattern>nameBankSoapTrace.log.%d{yyyy-MM-dd}.log</fileNamePattern>
+                        <!-- keep 5 days' worth of history -->
+                        <maxHistory>5</maxHistory>
+                </rollingPolicy>
+                <encoder>
+                  <pattern>%date [%thread] %highlight(%-5level) %logger{35} - %replace(%msg){'&lt;password>(.*)&lt;/password>|password=(.*),', '********'}%n</pattern>
+                </encoder>
+	</appender>
+
+	<appender name="nameBankTransactionFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <param name="file" value="/usr/src/app/logs/nameBankTransactions.log" />
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                        <!-- daily rollover -->
+                        <fileNamePattern>nameBankTransactions.log.%d{yyyy-MM-dd}.log</fileNamePattern>
+                        <!-- keep 5 days' worth of history -->
+                        <maxHistory>5</maxHistory>
+                </rollingPolicy>
+                <encoder>
+                        <pattern>%date [%thread] %highlight(%-5level) %logger{35} - %msg%n</pattern>
+                </encoder>
+        </appender>
+
+  <appender name="ANALYTICS-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <param name="file" value="/usr/src/app/logs/analytics/csb_translator.log" />
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>csb_translator.log.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 5 days' worth of history -->
+            <maxHistory>5</maxHistory>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%date{ISO8601} [%thread] %level: %msg%n</pattern>
+    </encoder>
+  </appender>
+
+ 	<logger name="mx.com.anzen.app.abanking.translator.nameBank">
+ 		<level value="warn" />
+ 		<appender-ref ref="nameBankTranslatorFile" /> 
+ 	</logger>
+ 	<logger name="org.apache.cxf.services">
+ 		<level value="info" />
+ 		<appender-ref ref="nameBankoSoapTraceFile" />
+    <appender-ref ref="console" />
+ 	</logger>
+   <logger name="analytics" level="INFO" additivity="false">
+    <appender-ref ref="ANALYTICS-FILE"/>
+   	<appender-ref ref="console" /> 
+   </logger>
+	
+	<root level="info">
+        	<appender-ref ref="console" /> 
+	</root>
+
+</configuration>
